@@ -31,7 +31,7 @@ export function HistoryPeek({ entry, onSeeAll }) {
         <div className="px-4 pb-4">
           <div className="flex items-center justify-between mb-3">
             <span className="text-sm font-semibold text-foreground">History</span>
-            <button onClick={onSeeAll} className="text-sm font-medium text-primary">
+            <button onClick={onSeeAll} className="text-sm font-medium text-[oklch(0.280_0.110_95)]">
               See all
             </button>
           </div>

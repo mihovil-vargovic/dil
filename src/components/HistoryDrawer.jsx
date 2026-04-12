@@ -145,7 +145,7 @@ export function HistoryDrawer({ open, onOpenChange, entries, onDelete, onClearAl
             {entries.length > 0 && (
               <button
                 onClick={() => setShowClearConfirm(true)}
-                className="text-sm text-destructive font-medium"
+                className="text-sm text-[oklch(0.280_0.110_95)] font-medium"
               >
                 Clear all
               </button>

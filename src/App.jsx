@@ -330,7 +330,7 @@ export default function App() {
         {cards.length < 6 && (
           <button
             onClick={addCard}
-            className="w-full h-11 rounded-xl border border-dashed border-[#D0D0D0] text-sm text-[#6B7280] font-medium hover:border-primary hover:text-primary transition-colors"
+            className="w-full h-11 rounded-xl border border-dashed border-[#D0D0D0] text-sm text-[#6B7280] font-medium hover:border-primary hover:text-[oklch(0.280_0.110_95)] transition-colors"
           >
             + Add product
           </button>
