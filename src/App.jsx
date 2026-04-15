@@ -212,7 +212,7 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
             value={card.price}
             onChange={e => onUpdate({ ...card, price: e.target.value })}
             tag="€"
-            placeholder="1.20"
+            placeholder="Enter price"
             error={card.errors.price}
           />
 
@@ -221,7 +221,7 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
             value={card.amount}
             onChange={e => onUpdate({ ...card, amount: e.target.value })}
             tag={cfg.tag}
-            placeholder={mode === 'weight' ? '500' : mode === 'length' ? '100' : '6'}
+            placeholder={mode === 'weight' ? 'Enter weight in grams' : mode === 'length' ? 'Enter length in cm' : 'Enter number of pieces'}
             error={card.errors.amount}
           />
 
