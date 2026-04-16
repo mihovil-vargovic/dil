@@ -254,8 +254,6 @@ export default function App() {
     pieces: [makeCard()],
   })
   const [newCardId, setNewCardId] = useState(null)
-  const [hasCalculated, setHasCalculated] = useState(false)
-  const [historyOpenTrigger, setHistoryOpenTrigger] = useState(0)
 
   const { entries, addEntry, deleteEntry, clearAll } = useHistory()
   const cards = cardsByMode[mode]
@@ -278,7 +276,6 @@ export default function App() {
     const next = cards.map(c => c.id === updated.id ? updated : c)
     setCards(next)
     if (updated.result !== null) {
-        setHasCalculated(true)
       const validCount = next.filter(c => c.result !== null).length
       if (validCount >= 2) {
         addEntry(mode, next)
@@ -325,26 +322,14 @@ export default function App() {
         {/* Navbar */}
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-foreground">Cifrijaner</h1>
-          <div className="flex items-center gap-3">
-            {hasAnyInput && (
-              <button
-                onClick={clearAllCards}
-                className="text-sm text-[#6B7280] hover:text-foreground transition-colors"
-              >
-                Clear all
-              </button>
-            )}
+          {hasAnyInput && (
             <button
-              onClick={() => { setHasCalculated(true); setHistoryOpenTrigger(n => n + 1) }}
-              aria-label="View history"
-              className="text-[#6B7280] hover:text-foreground transition-colors w-8 h-8 flex items-center justify-center rounded"
+              onClick={clearAllCards}
+              className="text-sm text-[#6B7280] hover:text-foreground transition-colors"
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <circle cx="12" cy="12" r="10" />
-                <polyline points="12 6 12 12 16 14" />
-              </svg>
+              Clear all
             </button>
-          </div>
+          )}
         </div>
 
         <UnitSwitcher mode={mode} onChange={handleModeChange} />
@@ -373,16 +358,13 @@ export default function App() {
         )}
       </div>
 
-      {hasCalculated && (
-        <HistoryPeek
-          entries={entries}
-          onDelete={deleteEntry}
-          onClearAll={clearAll}
-          onRestore={handleRestore}
-          hasCurrentInput={hasAnyInput}
-          triggerOpen={historyOpenTrigger}
-        />
-      )}
+      <HistoryPeek
+        entries={entries}
+        onDelete={deleteEntry}
+        onClearAll={clearAll}
+        onRestore={handleRestore}
+        hasCurrentInput={hasAnyInput}
+      />
     </div>
   )
 }

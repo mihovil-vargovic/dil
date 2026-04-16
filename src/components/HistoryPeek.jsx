@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -75,12 +75,8 @@ function HistoryEntry({ entry, onDelete, onRestore }) {
   )
 }
 
-export function HistoryPeek({ entries, onDelete, onClearAll, onRestore, hasCurrentInput, triggerOpen = 0 }) {
+export function HistoryPeek({ entries, onDelete, onClearAll, onRestore, hasCurrentInput }) {
   const [expanded, setExpanded] = useState(false)
-
-  useEffect(() => {
-    if (triggerOpen > 0) setExpanded(true)
-  }, [triggerOpen])
   const [pendingRestore, setPendingRestore] = useState(null)
   const [showClearConfirm, setShowClearConfirm] = useState(false)
 
@@ -121,21 +117,14 @@ export function HistoryPeek({ entries, onDelete, onClearAll, onRestore, hasCurre
       )}
 
       <div className="fixed bottom-0 left-0 right-0 z-40 flex justify-center pointer-events-none">
-        <div className="w-full max-w-[375px] pointer-events-auto flex flex-col">
-
-          {/* Gradient fade above the panel (collapsed only) */}
-          {!expanded && (
-            <div className="h-10 bg-gradient-to-b from-transparent to-white" />
-          )}
-
-          {/* Panel */}
-          <div
-            className={[
-              'bg-white rounded-t-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.13)] flex flex-col transition-all duration-300',
-              expanded ? 'max-h-[75vh]' : 'max-h-[220px]',
-            ].join(' ')}
-            style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
-          >
+        <div
+          className="w-full max-w-[375px] pointer-events-auto bg-white rounded-t-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.13)] flex flex-col overflow-hidden"
+          style={{
+            height: expanded ? '100vh' : '220px',
+            transition: 'height 0.3s ease',
+            paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+          }}
+        >
             {/* Drag handle */}
             <div
               className="flex justify-center pt-3 pb-2 shrink-0 cursor-pointer"
@@ -144,82 +133,60 @@ export function HistoryPeek({ entries, onDelete, onClearAll, onRestore, hasCurre
               <div className="w-10 h-1 rounded-full bg-[#E0E0E0]" />
             </div>
 
-            {/* ── Expanded: full history list ── */}
-            {expanded && (
-              <>
-                <div className="flex items-center justify-between px-4 py-2 shrink-0">
-                  <span className="text-base font-semibold text-foreground">History</span>
-                  {entries.length > 0 && (
-                    <button
-                      onClick={() => setShowClearConfirm(true)}
-                      className="text-sm font-medium text-[oklch(0.280_0.110_95)]"
-                    >
-                      Clear all
-                    </button>
-                  )}
-                </div>
+            {/* Header */}
+            <div className="flex items-center justify-between px-4 py-2 shrink-0">
+              <span className="text-base font-semibold text-foreground">History</span>
+              {entries.length > 0 && (
+                <button
+                  onClick={() => setShowClearConfirm(true)}
+                  className="text-sm font-medium text-[oklch(0.280_0.110_95)]"
+                >
+                  Clear all
+                </button>
+              )}
+            </div>
 
-                {entries.length === 0 ? (
-                  <div className="flex-1 flex items-center justify-center">
-                    <p className="text-sm text-muted-foreground">No comparisons yet.</p>
-                  </div>
-                ) : (
-                  <div className="flex-1 overflow-y-auto px-4">
-                    <p className="text-xs text-muted-foreground mb-2">Tap to restore · Trash to delete</p>
-                    <div className="divide-y divide-border">
-                      {entries.map(e => (
-                        <HistoryEntry
-                          key={e.id}
-                          entry={e}
-                          onDelete={onDelete}
-                          onRestore={handleRestoreClick}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </>
+            {/* History list */}
+            {entries.length === 0 ? (
+              <div className="flex-1 px-4 py-2">
+                <p className="text-sm text-muted-foreground">No history yet</p>
+              </div>
+            ) : (
+              <div className={expanded ? 'flex-1 overflow-y-auto px-4' : 'overflow-hidden px-4 max-h-[96px]'}>
+                {expanded && <p className="text-xs text-muted-foreground mb-2">Tap to restore · Trash to delete</p>}
+                <div className="divide-y divide-border">
+                  {entries.map(e => (
+                    <HistoryEntry
+                      key={e.id}
+                      entry={e}
+                      onDelete={onDelete}
+                      onRestore={handleRestoreClick}
+                    />
+                  ))}
+                </div>
+              </div>
             )}
 
-            {/* ── Collapsed: peek + CTA ── */}
-            {!expanded && entries.length > 0 && (
-              <div className="px-4 pb-4 flex flex-col gap-3">
-                {entry && (
-                  <div className="relative overflow-hidden rounded-xl">
-                    {/* Gradient over top of entry */}
-                    <div className="absolute top-0 left-0 right-0 h-7 bg-gradient-to-b from-white to-transparent z-10 pointer-events-none" />
-                    <div className="bg-[#FAFAFA] rounded-xl p-3 border border-[#E0E0E0]">
-                      <p className="text-xs text-muted-foreground mb-2">
-                        {formatDate(entry.savedAt)} · {MODE_LABEL[entry.unitType]}
-                      </p>
-                      <div className="flex flex-wrap gap-1.5">
-                        {entry.cards.map((card, i) => (
-                          <span
-                            key={i}
-                            className={[
-                              'inline-flex items-center px-2.5 py-1 rounded-full text-xs border',
-                              i === entry.winnerId
-                                ? 'border-foreground/40 bg-foreground/5 font-semibold text-foreground'
-                                : 'border-border text-muted-foreground',
-                            ].join(' ')}
-                          >
-                            €{card.unitPrice.toFixed(2)}{suffix}{i === entry.winnerId ? ' ✓' : ''}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
+            {/* CTA */}
+            {expanded ? (
+              <div className="px-4 py-4 shrink-0">
+                <button
+                  onClick={() => setExpanded(false)}
+                  className="w-full h-11 rounded-xl bg-[#F5F5F5] border border-[#E0E0E0] text-sm font-semibold text-foreground hover:bg-[#EFEFEF] transition-colors"
+                >
+                  Close
+                </button>
+              </div>
+            ) : (
+              <div className="px-4 pb-4 shrink-0">
                 <button
                   onClick={() => setExpanded(true)}
                   className="w-full h-11 rounded-xl bg-[#F5F5F5] border border-[#E0E0E0] text-sm font-semibold text-foreground hover:bg-[#EFEFEF] transition-colors"
                 >
-                  View history
+                  View all
                 </button>
               </div>
             )}
-          </div>
         </div>
       </div>
 
