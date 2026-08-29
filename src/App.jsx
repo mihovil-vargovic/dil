@@ -322,8 +322,7 @@ export default function App() {
       <div className="w-full max-w-[375px] flex flex-col gap-4">
 
         {/* Navbar */}
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-foreground">Dil</h1>
+        <div className="flex items-center justify-end">
           {hasAnyInput && (
             <button
               onClick={clearAllCards}
@@ -353,9 +352,9 @@ export default function App() {
         {cards.length < 6 && (
           <button
             onClick={addCard}
-            className="w-full h-11 rounded-xl border border-dashed border-[#D0D0D0] text-sm text-[#6B7280] font-medium hover:border-primary hover:text-[oklch(0.280_0.110_95)] transition-colors"
+            className="w-full h-11 rounded-xl border border-dashed border-[#D0D0D0] text-sm text-foreground font-medium hover:border-primary hover:text-[oklch(0.280_0.110_95)] transition-colors"
           >
-            + Add product
+            + Add product for comparison
           </button>
         )}
       </div>

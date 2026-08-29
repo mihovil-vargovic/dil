@@ -177,7 +177,7 @@ export function HistoryPeek({ entries, onDelete, onClearAll, onRestore, hasCurre
                   Close
                 </button>
               </div>
-            ) : (
+            ) : entries.length > 0 ? (
               <div className="px-4 pb-4 shrink-0">
                 <button
                   onClick={() => setExpanded(true)}
@@ -186,7 +186,7 @@ export function HistoryPeek({ entries, onDelete, onClearAll, onRestore, hasCurre
                   View all
                 </button>
               </div>
-            )}
+            ) : null}
         </div>
       </div>
 
