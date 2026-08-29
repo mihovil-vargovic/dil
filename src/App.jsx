@@ -150,6 +150,7 @@ function UnitSwitcher({ mode, onChange }) {
 function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBestDeal, isNew }) {
   const cfg = MODES[mode]
   const hasInput = card.price !== '' || card.amount !== '' || card.result !== null
+  const [resultVersion, setResultVersion] = useState(0)
 
   function handleCalculate() {
     const errors = validateCard(card.price, card.amount)
@@ -159,6 +160,7 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
     }
     const unitPrice = cfg.calc(parseNum(card.price), parseNum(card.amount))
     onUpdate({ ...card, errors: {}, result: unitPrice })
+    setResultVersion(v => v + 1)
   }
 
   return (
@@ -198,7 +200,7 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
           <div className="min-h-[53px] flex flex-col gap-4">
             {card.result !== null && (
               <>
-                <p key={card.result} className="text-3xl font-bold text-left text-foreground animate-result-in">
+                <p key={resultVersion} className="text-3xl font-bold text-left text-foreground animate-result-in">
                   €{card.result.toFixed(2)}{' '}
                   <span className="font-normal text-muted-foreground">{cfg.resultSuffix}</span>
                 </p>
@@ -323,18 +325,6 @@ export default function App() {
     <div className="min-h-screen bg-white flex flex-col items-center pt-0 px-4 pb-48">
       <div className="w-full max-w-[375px] flex flex-col gap-4">
 
-        {/* Navbar */}
-        <div className="flex items-center justify-end">
-          {hasAnyInput && (
-            <button
-              onClick={clearAllCards}
-              className="text-sm text-[#6B7280] hover:text-foreground transition-colors"
-            >
-              Clear all
-            </button>
-          )}
-        </div>
-
         <UnitSwitcher mode={mode} onChange={handleModeChange} />
 
         {cards.map(card => (
@@ -357,6 +347,15 @@ export default function App() {
             className="w-full h-11 rounded-xl border border-dashed border-[#D0D0D0] text-sm text-foreground font-medium hover:border-primary hover:text-[oklch(0.280_0.110_95)] transition-colors"
           >
             + Add product for comparison
+          </button>
+        )}
+
+        {hasAnyInput && (
+          <button
+            onClick={clearAllCards}
+            className="text-sm text-[#6B7280] hover:text-foreground transition-colors self-center"
+          >
+            Clear all
           </button>
         )}
       </div>
