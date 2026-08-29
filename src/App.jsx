@@ -89,7 +89,7 @@ function InputWithTag({ label, value, onChange, tag, error, placeholder }) {
       <label htmlFor={id} className="text-[13px] font-medium text-foreground">
         {label}
       </label>
-      <div className="flex items-center h-11 border border-input rounded-[6px] overflow-hidden bg-white transition-[border-color,box-shadow] focus-within:border-primary focus-within:shadow-[0_0_0_3px_oklch(0.905_0.180_95/0.35)]">
+      <div className="flex items-center h-11 border border-input rounded-3xl overflow-hidden bg-white transition-[border-color,box-shadow] focus-within:border-primary focus-within:shadow-[0_0_0_3px_oklch(0.905_0.180_95/0.35)]">
         <input
           id={id}
           type="text"
@@ -318,7 +318,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center pt-10 px-4 pb-48">
+    <div className="min-h-screen bg-white flex flex-col items-center pt-6 px-4 pb-48">
       <div className="w-full max-w-[375px] flex flex-col gap-4">
 
         {/* Navbar */}
