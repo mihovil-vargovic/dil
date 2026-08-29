@@ -12,8 +12,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png'],
       manifest: {
-        name: 'Cifrijaner',
-        short_name: 'Cifrijaner',
+        name: 'Dil',
+        short_name: 'Dil',
         description: 'Compare price per unit — kg, m, or piece',
         theme_color: '#ffffff',
         background_color: '#f2f2f7',

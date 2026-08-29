@@ -172,7 +172,7 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
         ].join(' ')}
       >
         <CardContent className="p-4 flex flex-col gap-4">
-          {(isBestDeal || showRemove || hasInput) && (
+          {(isBestDeal || showRemove) && (
             <div className="flex items-center justify-between -mb-1">
               <div>
                 {isBestDeal && (
@@ -182,18 +182,6 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
                 )}
               </div>
               <div className="flex items-center gap-1">
-                {hasInput && (
-                  <button
-                    onClick={onReset}
-                    aria-label="Reset card"
-                    className="text-[#A0AEC0] hover:text-foreground transition-colors w-6 h-6 flex items-center justify-center rounded"
-                  >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                      <path d="M3 3v5h5" />
-                    </svg>
-                  </button>
-                )}
                 {showRemove && (
                   <button
                     onClick={onRemove}
@@ -205,6 +193,16 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
                 )}
               </div>
             </div>
+          )}
+
+          {card.result !== null && (
+            <>
+              <p className="text-2xl font-bold text-center text-foreground animate-result-in">
+                €{card.result.toFixed(2)}{' '}
+                <span className="font-normal text-muted-foreground">{cfg.resultSuffix}</span>
+              </p>
+              <Separator />
+            </>
           )}
 
           <InputWithTag
@@ -225,19 +223,23 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
             error={card.errors.amount}
           />
 
-          <Button className="w-full" onClick={handleCalculate}>
-            {card.result !== null ? 'Recalculate' : 'Calculate'}
-          </Button>
-
-          {card.result !== null && (
-            <>
-              <Separator />
-              <p className="text-2xl font-bold text-center text-foreground animate-result-in">
-                €{card.result.toFixed(2)}{' '}
-                <span className="font-normal text-muted-foreground">{cfg.resultSuffix}</span>
-              </p>
-            </>
-          )}
+          <div className="flex items-center gap-2">
+            <Button className="flex-1" onClick={handleCalculate}>
+              {card.result !== null ? 'Recalculate' : 'Calculate'}
+            </Button>
+            {hasInput && (
+              <button
+                onClick={onReset}
+                aria-label="Reset card"
+                className="text-[#A0AEC0] hover:text-foreground transition-colors w-11 h-11 flex items-center justify-center rounded-lg border border-[#E0E0E0] shrink-0"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                  <path d="M3 3v5h5" />
+                </svg>
+              </button>
+            )}
+          </div>
         </CardContent>
       </Card>
     </div>
@@ -321,7 +323,7 @@ export default function App() {
 
         {/* Navbar */}
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-foreground">Cifrijaner</h1>
+          <h1 className="text-2xl font-bold text-foreground">Dil</h1>
           {hasAnyInput && (
             <button
               onClick={clearAllCards}

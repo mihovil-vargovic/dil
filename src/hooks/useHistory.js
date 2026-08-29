@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
 
-const KEY = 'cifrijaner_history'
+const KEY = 'dil_history'
 const MAX = 50
 
 function load() {

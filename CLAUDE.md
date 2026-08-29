@@ -1,4 +1,4 @@
-# Cifrijaner — Claude Rules
+# Dil — Claude Rules
 
 ## Git
 - **Never commit or push unless the user explicitly types "commit".**
