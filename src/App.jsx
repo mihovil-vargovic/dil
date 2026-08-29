@@ -198,7 +198,7 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
           )}
 
           <div className="min-h-[53px] flex flex-col gap-4">
-            {card.result !== null && (
+            {card.result !== null ? (
               <>
                 <p key={resultVersion} className="text-3xl font-bold text-left text-foreground animate-result-in">
                   €{card.result.toFixed(2)}{' '}
@@ -206,6 +206,10 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
                 </p>
                 <Separator />
               </>
+            ) : (
+              <p className="text-3xl font-bold text-left text-muted-foreground/40">
+                €0.00 <span className="font-normal">{cfg.resultSuffix}</span>
+              </p>
             )}
           </div>
 
@@ -231,18 +235,21 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
             <Button className="flex-1" onClick={handleCalculate}>
               {card.result !== null ? 'Recalculate' : 'Calculate'}
             </Button>
-            {hasInput && (
-              <button
-                onClick={onReset}
-                aria-label="Reset card"
-                className="text-[#A0AEC0] hover:text-foreground transition-colors w-11 h-11 flex items-center justify-center rounded-3xl border border-[#E0E0E0] shrink-0"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                  <path d="M3 3v5h5" />
-                </svg>
-              </button>
-            )}
+            <button
+              onClick={onReset}
+              aria-label="Reset card"
+              disabled={!hasInput}
+              tabIndex={hasInput ? 0 : -1}
+              className={[
+                'text-[#A0AEC0] hover:text-foreground transition-colors w-11 h-11 flex items-center justify-center rounded-3xl border border-[#E0E0E0] shrink-0',
+                hasInput ? '' : 'invisible',
+              ].join(' ')}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                <path d="M3 3v5h5" />
+              </svg>
+            </button>
           </div>
         </CardContent>
       </Card>
