@@ -127,14 +127,14 @@ function InputWithTag({ label, value, onChange, tag, error, placeholder }) {
 
 function UnitSwitcher({ mode, onChange }) {
   return (
-    <div role="group" aria-label="Unit type" className="flex items-center bg-[#F0F0F0] rounded-lg p-1 gap-0.5">
+    <div role="group" aria-label="Unit type" className="flex items-center bg-[#F0F0F0] rounded-3xl p-1 gap-0.5">
       {Object.entries(MODES).map(([key, cfg]) => (
         <button
           key={key}
           onClick={() => onChange(key)}
           aria-pressed={mode === key}
           className={[
-            'flex-1 text-sm font-medium py-1.5 rounded-md transition-all',
+            'flex-1 text-sm font-medium py-1.5 rounded-3xl transition-all',
             mode === key
               ? 'bg-white text-foreground shadow-[0_1px_3px_rgba(0,0,0,0.12)]'
               : 'text-[#6B7280] hover:text-foreground',
@@ -197,7 +197,7 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
 
           {card.result !== null && (
             <>
-              <p className="text-2xl font-bold text-center text-foreground animate-result-in">
+              <p className="text-2xl font-bold text-left text-foreground animate-result-in">
                 €{card.result.toFixed(2)}{' '}
                 <span className="font-normal text-muted-foreground">{cfg.resultSuffix}</span>
               </p>
@@ -231,7 +231,7 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
               <button
                 onClick={onReset}
                 aria-label="Reset card"
-                className="text-[#A0AEC0] hover:text-foreground transition-colors w-11 h-11 flex items-center justify-center rounded-lg border border-[#E0E0E0] shrink-0"
+                className="text-[#A0AEC0] hover:text-foreground transition-colors w-11 h-11 flex items-center justify-center rounded-3xl border border-[#E0E0E0] shrink-0"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
