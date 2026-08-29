@@ -165,7 +165,7 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
     <div className={isNew ? 'animate-card-in' : ''}>
       <Card
         className={[
-          'py-0 rounded-xl border-0 shadow-[0_0_0_1px_#E0E0E0,_0_2px_4px_0_rgba(0,0,0,0.07),_0_1px_1.5px_0_rgba(0,0,0,0.05)] transition-colors',
+          'py-0 rounded-3xl border-0 shadow-[0_0_0_1px_#E0E0E0,_0_2px_4px_0_rgba(0,0,0,0.07),_0_1px_1.5px_0_rgba(0,0,0,0.05)] transition-colors',
           isBestDeal
             ? 'border-l-4 !border-l-primary bg-primary/5 shadow-[4px_0_0_0_oklch(0.905_0.180_95),_0_0_0_1px_#E0E0E0,_0_2px_4px_0_rgba(0,0,0,0.07)]'
             : '',
@@ -195,15 +195,17 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
             </div>
           )}
 
-          {card.result !== null && (
-            <>
-              <p className="text-2xl font-bold text-left text-foreground animate-result-in">
-                €{card.result.toFixed(2)}{' '}
-                <span className="font-normal text-muted-foreground">{cfg.resultSuffix}</span>
-              </p>
-              <Separator />
-            </>
-          )}
+          <div className="min-h-[53px] flex flex-col gap-4">
+            {card.result !== null && (
+              <>
+                <p key={card.result} className="text-3xl font-bold text-left text-foreground animate-result-in">
+                  €{card.result.toFixed(2)}{' '}
+                  <span className="font-normal text-muted-foreground">{cfg.resultSuffix}</span>
+                </p>
+                <Separator />
+              </>
+            )}
+          </div>
 
           <InputWithTag
             label="Price"
@@ -318,7 +320,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center pt-6 px-4 pb-48">
+    <div className="min-h-screen bg-white flex flex-col items-center pt-0 px-4 pb-48">
       <div className="w-full max-w-[375px] flex flex-col gap-4">
 
         {/* Navbar */}
