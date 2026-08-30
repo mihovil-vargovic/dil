@@ -10,3 +10,13 @@ createRoot(document.getElementById('root')).render(
     <SpeedInsights />
   </StrictMode>,
 )
+
+if ('serviceWorker' in navigator) {
+  const checkForUpdate = () => {
+    navigator.serviceWorker.getRegistration().then(reg => reg?.update())
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') checkForUpdate()
+  })
+  window.addEventListener('focus', checkForUpdate)
+}
