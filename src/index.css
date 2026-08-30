@@ -21,6 +21,21 @@
   animation: card-in 200ms ease-out both;
 }
 
+@keyframes digit-roll {
+  from { transform: translateY(65%); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+.animate-digit-roll {
+  animation: digit-roll 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-digit-roll {
+    animation: none;
+  }
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

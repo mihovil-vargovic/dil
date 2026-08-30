@@ -147,6 +147,23 @@ function UnitSwitcher({ mode, onChange }) {
   )
 }
 
+function AnimatedDigits({ text, animKey }) {
+  return (
+    <span className="inline-flex">
+      {text.split('').map((ch, i) => (
+        <span key={`${animKey}-${i}`} className="inline-block overflow-hidden align-bottom leading-none">
+          <span
+            className="inline-block animate-digit-roll"
+            style={{ animationDelay: `${i * 25}ms` }}
+          >
+            {ch}
+          </span>
+        </span>
+      ))}
+    </span>
+  )
+}
+
 function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBestDeal, isNew }) {
   const cfg = MODES[mode]
   const hasInput = card.price !== '' || card.amount !== '' || card.result !== null
@@ -200,8 +217,8 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
           <div className="min-h-[53px] flex flex-col gap-4">
             {card.result !== null ? (
               <>
-                <p key={resultVersion} className="text-3xl font-bold text-left text-foreground animate-result-in">
-                  €{card.result.toFixed(2)}{' '}
+                <p className="text-3xl font-bold text-left text-foreground leading-none">
+                  <AnimatedDigits text={`€${card.result.toFixed(2)}`} animKey={resultVersion} />{' '}
                   <span className="font-normal text-muted-foreground">{cfg.resultSuffix}</span>
                 </p>
                 <Separator />
@@ -235,13 +252,14 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
             <Button className="flex-1" onClick={handleCalculate}>
               {card.result !== null ? 'Recalculate' : 'Calculate'}
             </Button>
-            <button
+            <Button
+              variant="accent"
               onClick={onReset}
               aria-label="Reset card"
               disabled={!hasInput}
               tabIndex={hasInput ? 0 : -1}
               className={[
-                'text-[#A0AEC0] hover:text-foreground transition-colors w-11 h-11 flex items-center justify-center rounded-3xl border border-[#E0E0E0] shrink-0',
+                'size-11 rounded-3xl shrink-0',
                 hasInput ? '' : 'invisible',
               ].join(' ')}
             >
@@ -249,7 +267,7 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
                 <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
                 <path d="M3 3v5h5" />
               </svg>
-            </button>
+            </Button>
           </div>
         </CardContent>
       </Card>

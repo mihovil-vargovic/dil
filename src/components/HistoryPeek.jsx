@@ -118,7 +118,7 @@ export function HistoryPeek({ entries, onDelete, onClearAll, onRestore, hasCurre
 
       <div className="fixed bottom-0 left-0 right-0 z-40 flex justify-center pointer-events-none">
         <div
-          className="w-full max-w-[375px] pointer-events-auto bg-white rounded-t-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.13)] flex flex-col overflow-hidden"
+          className="w-full pointer-events-auto bg-white rounded-t-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.13)] flex flex-col overflow-hidden"
           style={{
             height: expanded ? '100vh' : '220px',
             transition: 'height 0.3s ease',
