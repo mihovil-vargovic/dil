@@ -76,19 +76,16 @@ function HistoryEntry({ entry, onDelete, onRestore }) {
 }
 
 export function HistoryPeek({ entries, onDelete, onClearAll, onRestore, hasCurrentInput }) {
-  const [expanded, setExpanded] = useState(false)
+  const [open, setOpen] = useState(false)
   const [pendingRestore, setPendingRestore] = useState(null)
   const [showClearConfirm, setShowClearConfirm] = useState(false)
-
-  const entry = entries[0] ?? null
-  const suffix = entry ? SUFFIX[entry.unitType] : null
 
   function handleRestoreClick(entry) {
     if (hasCurrentInput) {
       setPendingRestore(entry)
     } else {
       onRestore(entry)
-      setExpanded(false)
+      setOpen(false)
     }
   }
 
@@ -96,45 +93,52 @@ export function HistoryPeek({ entries, onDelete, onClearAll, onRestore, hasCurre
     if (pendingRestore) {
       onRestore(pendingRestore)
       setPendingRestore(null)
-      setExpanded(false)
+      setOpen(false)
     }
   }
 
   function confirmClearAll() {
     onClearAll()
     setShowClearConfirm(false)
-    setExpanded(false)
+    setOpen(false)
   }
 
   return (
     <>
+      {/* Floating history button */}
+      <button
+        onClick={() => setOpen(true)}
+        aria-label="Open history"
+        className="fixed z-40 w-14 h-14 rounded-full bg-white border border-[#E0E0E0] shadow-[0_0_0_1px_#E0E0E0,_0_2px_4px_0_rgba(0,0,0,0.07),_0_1px_1.5px_0_rgba(0,0,0,0.05)] flex items-center justify-center text-foreground hover:bg-[#FAFAFA] transition-colors"
+        style={{ left: '16px', bottom: 'calc(16px + env(safe-area-inset-bottom, 0px))' }}
+      >
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 7v5l3 3" />
+        </svg>
+      </button>
+
       {/* Backdrop */}
-      {expanded && (
+      {open && (
         <div
           className="fixed inset-0 z-30 bg-black/20 transition-opacity"
-          onClick={() => setExpanded(false)}
+          onClick={() => setOpen(false)}
         />
       )}
 
-      <div className="fixed bottom-0 left-0 right-0 z-40 flex justify-center pointer-events-none">
+      {/* Sheet */}
+      <div className="fixed inset-0 z-40 pointer-events-none">
         <div
-          className="w-full pointer-events-auto bg-white rounded-t-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.13)] flex flex-col overflow-hidden"
+          className="absolute inset-0 pointer-events-auto bg-white rounded-t-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.13)] flex flex-col overflow-hidden"
           style={{
-            height: expanded ? '100vh' : '220px',
-            transition: 'height 0.3s ease',
+            transform: open ? 'translateY(0)' : 'translateY(100%)',
+            transition: 'transform 0.3s ease',
             paddingBottom: 'env(safe-area-inset-bottom, 0px)',
           }}
+          inert={!open}
         >
-            {/* Drag handle */}
-            <div
-              className="flex justify-center pt-3 pb-2 shrink-0 cursor-pointer"
-              onClick={() => setExpanded(e => !e)}
-            >
-              <div className="w-10 h-1 rounded-full bg-[#E0E0E0]" />
-            </div>
-
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-2 shrink-0">
+            <div className="flex items-center justify-between px-4 pt-4 py-2 shrink-0">
               <span className="text-base font-semibold text-foreground">History</span>
               {entries.length > 0 && (
                 <button
@@ -152,8 +156,8 @@ export function HistoryPeek({ entries, onDelete, onClearAll, onRestore, hasCurre
                 <p className="text-sm text-muted-foreground">No history yet</p>
               </div>
             ) : (
-              <div className={expanded ? 'flex-1 overflow-y-auto px-4' : 'overflow-hidden px-4 max-h-[96px]'}>
-                {expanded && <p className="text-xs text-muted-foreground mb-2">Tap to restore · Trash to delete</p>}
+              <div className="flex-1 overflow-y-auto px-4">
+                <p className="text-xs text-muted-foreground mb-2">Tap to restore · Trash to delete</p>
                 <div className="divide-y divide-border">
                   {entries.map(e => (
                     <HistoryEntry
@@ -168,25 +172,14 @@ export function HistoryPeek({ entries, onDelete, onClearAll, onRestore, hasCurre
             )}
 
             {/* CTA */}
-            {expanded ? (
-              <div className="px-4 py-4 shrink-0">
-                <button
-                  onClick={() => setExpanded(false)}
-                  className="w-full h-11 rounded-xl bg-[#F5F5F5] border border-[#E0E0E0] text-sm font-semibold text-foreground hover:bg-[#EFEFEF] transition-colors"
-                >
-                  Close
-                </button>
-              </div>
-            ) : entries.length > 0 ? (
-              <div className="px-4 pb-4 shrink-0">
-                <button
-                  onClick={() => setExpanded(true)}
-                  className="w-full h-11 rounded-xl bg-[#F5F5F5] border border-[#E0E0E0] text-sm font-semibold text-foreground hover:bg-[#EFEFEF] transition-colors"
-                >
-                  View all
-                </button>
-              </div>
-            ) : null}
+            <div className="px-4 py-4 shrink-0">
+              <button
+                onClick={() => setOpen(false)}
+                className="w-full h-11 rounded-xl bg-[#F5F5F5] border border-[#E0E0E0] text-sm font-semibold text-foreground hover:bg-[#EFEFEF] transition-colors"
+              >
+                Close
+              </button>
+            </div>
         </div>
       </div>
 

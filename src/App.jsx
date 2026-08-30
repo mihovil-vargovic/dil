@@ -347,7 +347,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center pt-0 px-4 pb-48">
+    <div className="min-h-screen bg-white flex flex-col items-center pt-0 px-4 pb-24">
       <div className="w-full max-w-[375px] flex flex-col gap-4">
 
         <UnitSwitcher mode={mode} onChange={handleModeChange} />
