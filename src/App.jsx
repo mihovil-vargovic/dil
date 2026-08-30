@@ -216,18 +216,16 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
 
           <div className="min-h-[53px] flex flex-col gap-4">
             {card.result !== null ? (
-              <>
-                <p className="text-3xl font-bold text-left text-foreground leading-none">
-                  <AnimatedDigits text={`€${card.result.toFixed(2)}`} animKey={resultVersion} />{' '}
-                  <span className="font-normal text-muted-foreground">{cfg.resultSuffix}</span>
-                </p>
-                <Separator />
-              </>
+              <p className="text-3xl font-bold text-left text-foreground leading-none">
+                <AnimatedDigits text={`€${card.result.toFixed(2)}`} animKey={resultVersion} />{' '}
+                <span className="font-normal text-muted-foreground">{cfg.resultSuffix}</span>
+              </p>
             ) : (
-              <p className="text-3xl font-bold text-left text-muted-foreground/40">
+              <p className="text-3xl font-bold text-left text-muted-foreground/40 leading-none">
                 €0.00 <span className="font-normal">{cfg.resultSuffix}</span>
               </p>
             )}
+            <Separator />
           </div>
 
           <InputWithTag
@@ -257,11 +255,7 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
               onClick={onReset}
               aria-label="Reset card"
               disabled={!hasInput}
-              tabIndex={hasInput ? 0 : -1}
-              className={[
-                'size-11 rounded-3xl shrink-0',
-                hasInput ? '' : 'invisible',
-              ].join(' ')}
+              className="size-11 rounded-3xl shrink-0"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
@@ -322,10 +316,6 @@ export default function App() {
     setCards(prev => prev.map(c => c.id === id ? { ...c, price: '', amount: '', result: null, errors: {} } : c))
   }
 
-  function clearAllCards() {
-    setCards(prev => prev.map(c => ({ ...c, price: '', amount: '', result: null, errors: {} })))
-  }
-
   function addCard() {
     if (cards.length >= 6) return
     const card = makeCard()
@@ -347,7 +337,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center pt-0 px-4 pb-24">
+    <div className="min-h-screen bg-white flex flex-col items-center pt-3 px-4 pb-24">
       <div className="w-full max-w-[375px] flex flex-col gap-4">
 
         <UnitSwitcher mode={mode} onChange={handleModeChange} />
@@ -372,15 +362,6 @@ export default function App() {
             className="w-full h-11 rounded-xl border border-dashed border-[#D0D0D0] text-sm text-foreground font-medium hover:border-primary hover:text-[oklch(0.280_0.110_95)] transition-colors"
           >
             + Add product for comparison
-          </button>
-        )}
-
-        {hasAnyInput && (
-          <button
-            onClick={clearAllCards}
-            className="text-sm text-[#6B7280] hover:text-foreground transition-colors self-center"
-          >
-            Clear all
           </button>
         )}
       </div>
