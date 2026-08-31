@@ -168,6 +168,7 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
   const cfg = MODES[mode]
   const hasInput = card.price !== '' || card.amount !== '' || card.result !== null
   const [resultVersion, setResultVersion] = useState(0)
+  const [resetVersion, setResetVersion] = useState(0)
 
   function handleCalculate() {
     const errors = validateCard(card.price, card.amount)
@@ -178,6 +179,11 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
     const unitPrice = cfg.calc(parseNum(card.price), parseNum(card.amount))
     onUpdate({ ...card, errors: {}, result: unitPrice })
     setResultVersion(v => v + 1)
+  }
+
+  function handleReset() {
+    setResetVersion(v => v + 1)
+    onReset()
   }
 
   return (
@@ -197,50 +203,52 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
             </Badge>
           )}
 
-          <div className="min-h-[53px] flex flex-col gap-4">
-            <div className="flex items-center justify-between gap-2">
-              {card.result !== null ? (
-                <p className="text-3xl font-bold text-left text-foreground leading-none">
-                  <AnimatedDigits text={`€${card.result.toFixed(2)}`} animKey={resultVersion} />{' '}
-                  <span className="font-normal text-muted-foreground">{cfg.resultSuffix}</span>
-                </p>
-              ) : (
-                <p className="text-3xl font-bold text-left text-muted-foreground/40 leading-none">
-                  €0.00 <span className="font-normal">{cfg.resultSuffix}</span>
-                </p>
-              )}
-              {showRemove && (
-                <button
-                  onClick={onRemove}
-                  aria-label="Remove product"
-                  className="text-[#A0AEC0] hover:text-foreground transition-colors text-2xl leading-none w-9 h-9 flex items-center justify-center rounded shrink-0"
-                >
-                  <span aria-hidden="true">×</span>
-                </button>
-              )}
+          <div key={resetVersion} className="flex flex-col gap-4 animate-result-in">
+            <div className="min-h-[53px] flex flex-col gap-4">
+              <div className="flex items-center justify-between gap-2">
+                {card.result !== null ? (
+                  <p className="text-3xl font-bold text-left text-foreground leading-none">
+                    <AnimatedDigits text={`€${card.result.toFixed(2)}`} animKey={resultVersion} />{' '}
+                    <span className="font-normal text-muted-foreground">{cfg.resultSuffix}</span>
+                  </p>
+                ) : (
+                  <p className="text-3xl font-bold text-left text-muted-foreground/40 leading-none">
+                    €0.00 <span className="font-normal">{cfg.resultSuffix}</span>
+                  </p>
+                )}
+                {showRemove && (
+                  <button
+                    onClick={onRemove}
+                    aria-label="Remove product"
+                    className="text-[#A0AEC0] hover:text-foreground transition-colors text-2xl leading-none w-9 h-9 flex items-center justify-center rounded shrink-0"
+                  >
+                    <span aria-hidden="true">×</span>
+                  </button>
+                )}
+              </div>
+              <div className="-mx-4">
+                <Separator />
+              </div>
             </div>
-            <div className="-mx-4">
-              <Separator />
-            </div>
+
+            <InputWithTag
+              label="Price"
+              value={card.price}
+              onChange={e => onUpdate({ ...card, price: e.target.value })}
+              tag="€"
+              placeholder="Enter price"
+              error={card.errors.price}
+            />
+
+            <InputWithTag
+              label={cfg.amountLabel}
+              value={card.amount}
+              onChange={e => onUpdate({ ...card, amount: e.target.value })}
+              tag={cfg.tag}
+              placeholder={mode === 'weight' ? 'Enter weight in grams' : mode === 'length' ? 'Enter length in cm' : 'Enter number of pieces'}
+              error={card.errors.amount}
+            />
           </div>
-
-          <InputWithTag
-            label="Price"
-            value={card.price}
-            onChange={e => onUpdate({ ...card, price: e.target.value })}
-            tag="€"
-            placeholder="Enter price"
-            error={card.errors.price}
-          />
-
-          <InputWithTag
-            label={cfg.amountLabel}
-            value={card.amount}
-            onChange={e => onUpdate({ ...card, amount: e.target.value })}
-            tag={cfg.tag}
-            placeholder={mode === 'weight' ? 'Enter weight in grams' : mode === 'length' ? 'Enter length in cm' : 'Enter number of pieces'}
-            error={card.errors.amount}
-          />
 
           <div className="flex items-center gap-2">
             <Button className="flex-1" onClick={handleCalculate}>
@@ -248,7 +256,7 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
             </Button>
             <Button
               variant="accent"
-              onClick={onReset}
+              onClick={handleReset}
               aria-label="Reset card"
               disabled={!hasInput}
               className="size-11 rounded-3xl shrink-0"
@@ -346,9 +354,12 @@ export default function App() {
 
         <UnitSwitcher mode={mode} onChange={handleModeChange} />
 
-        <div ref={scrollRef} className="flex overflow-x-auto snap-x snap-mandatory gap-4 no-scrollbar">
+        <div
+          ref={scrollRef}
+          className="flex overflow-x-auto snap-x snap-mandatory gap-4 no-scrollbar -mx-2 -my-2 px-2 py-2"
+        >
           {cards.map(card => (
-            <div key={card.id} className="w-[300px] shrink-0 snap-start">
+            <div key={card.id} className={['shrink-0 snap-start', cards.length === 1 ? 'w-full' : 'w-[310px]'].join(' ')}>
               <ProductCard
                 card={card}
                 mode={mode}

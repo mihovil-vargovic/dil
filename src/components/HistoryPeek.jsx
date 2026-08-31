@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Scale } from 'lucide-react'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -109,13 +110,11 @@ export function HistoryPeek({ entries, onDelete, onClearAll, onRestore, hasCurre
       <button
         onClick={() => setOpen(true)}
         aria-label="Open history"
-        className="fixed z-40 w-14 h-14 rounded-full bg-white border border-[#E0E0E0] shadow-[0_0_0_1px_#E0E0E0,_0_2px_4px_0_rgba(0,0,0,0.07),_0_1px_1.5px_0_rgba(0,0,0,0.05)] flex items-center justify-center text-foreground hover:bg-[#FAFAFA] transition-colors"
+        className="fixed z-40 h-11 pl-4 pr-5 rounded-full bg-white border border-[#E0E0E0] shadow-[0_0_0_1px_#E0E0E0,_0_2px_4px_0_rgba(0,0,0,0.05),_0_1px_1.5px_0_rgba(0,0,0,0.035)] flex items-center gap-2 text-foreground hover:bg-[#FAFAFA] transition-colors"
         style={{ left: '16px', bottom: 'calc(16px + env(safe-area-inset-bottom, 0px))' }}
       >
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="9" />
-          <path d="M12 7v5l3 3" />
-        </svg>
+        <Scale size={16} strokeWidth={2} aria-hidden="true" />
+        <span className="text-sm font-medium">History</span>
       </button>
 
       {/* Backdrop */}
