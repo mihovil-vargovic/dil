@@ -1,4 +1,4 @@
-import { useState, useId } from 'react'
+import { useState, useId, useRef, useEffect } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -191,41 +191,37 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
         ].join(' ')}
       >
         <CardContent className="p-4 flex flex-col gap-4">
-          {(isBestDeal || showRemove) && (
-            <div className="flex items-center justify-between -mb-1">
-              <div>
-                {isBestDeal && (
-                  <Badge variant="default" className="text-xs">
-                    ✓ Best deal
-                  </Badge>
-                )}
-              </div>
-              <div className="flex items-center gap-1">
-                {showRemove && (
-                  <button
-                    onClick={onRemove}
-                    aria-label="Remove product"
-                    className="text-[#A0AEC0] hover:text-foreground transition-colors text-lg leading-none w-6 h-6 flex items-center justify-center rounded"
-                  >
-                    <span aria-hidden="true">×</span>
-                  </button>
-                )}
-              </div>
-            </div>
+          {isBestDeal && (
+            <Badge variant="default" className="text-xs self-start -mb-1">
+              ✓ Best deal
+            </Badge>
           )}
 
           <div className="min-h-[53px] flex flex-col gap-4">
-            {card.result !== null ? (
-              <p className="text-3xl font-bold text-left text-foreground leading-none">
-                <AnimatedDigits text={`€${card.result.toFixed(2)}`} animKey={resultVersion} />{' '}
-                <span className="font-normal text-muted-foreground">{cfg.resultSuffix}</span>
-              </p>
-            ) : (
-              <p className="text-3xl font-bold text-left text-muted-foreground/40 leading-none">
-                €0.00 <span className="font-normal">{cfg.resultSuffix}</span>
-              </p>
-            )}
-            <Separator />
+            <div className="flex items-center justify-between gap-2">
+              {card.result !== null ? (
+                <p className="text-3xl font-bold text-left text-foreground leading-none">
+                  <AnimatedDigits text={`€${card.result.toFixed(2)}`} animKey={resultVersion} />{' '}
+                  <span className="font-normal text-muted-foreground">{cfg.resultSuffix}</span>
+                </p>
+              ) : (
+                <p className="text-3xl font-bold text-left text-muted-foreground/40 leading-none">
+                  €0.00 <span className="font-normal">{cfg.resultSuffix}</span>
+                </p>
+              )}
+              {showRemove && (
+                <button
+                  onClick={onRemove}
+                  aria-label="Remove product"
+                  className="text-[#A0AEC0] hover:text-foreground transition-colors text-2xl leading-none w-9 h-9 flex items-center justify-center rounded shrink-0"
+                >
+                  <span aria-hidden="true">×</span>
+                </button>
+              )}
+            </div>
+            <div className="-mx-4">
+              <Separator />
+            </div>
           </div>
 
           <InputWithTag
@@ -279,11 +275,18 @@ export default function App() {
     pieces: [makeCard()],
   })
   const [newCardId, setNewCardId] = useState(null)
+  const scrollRef = useRef(null)
 
   const { entries, addEntry, deleteEntry, clearAll } = useHistory()
   const cards = cardsByMode[mode]
   const bestDealIds = getBestDeal(cards)
   const hasAnyInput = cards.some(c => c.price !== '' || c.amount !== '')
+
+  useEffect(() => {
+    if (newCardId !== null && scrollRef.current) {
+      scrollRef.current.scrollTo({ left: scrollRef.current.scrollWidth, behavior: 'smooth' })
+    }
+  }, [newCardId])
 
   function setCards(updater) {
     setCardsByMode(prev => ({
@@ -295,6 +298,7 @@ export default function App() {
   function handleModeChange(newMode) {
     if (newMode === mode) return
     setMode(newMode)
+    if (scrollRef.current) scrollRef.current.scrollLeft = 0
   }
 
   function updateCard(updated) {
@@ -342,19 +346,22 @@ export default function App() {
 
         <UnitSwitcher mode={mode} onChange={handleModeChange} />
 
-        {cards.map(card => (
-          <ProductCard
-            key={card.id}
-            card={card}
-            mode={mode}
-            onUpdate={updateCard}
-            onRemove={() => removeCard(card.id)}
-            onReset={() => resetCard(card.id)}
-            showRemove={cards.length > 1}
-            isBestDeal={bestDealIds.has(card.id)}
-            isNew={card.id === newCardId}
-          />
-        ))}
+        <div ref={scrollRef} className="flex overflow-x-auto snap-x snap-mandatory gap-4 no-scrollbar">
+          {cards.map(card => (
+            <div key={card.id} className="w-[300px] shrink-0 snap-start">
+              <ProductCard
+                card={card}
+                mode={mode}
+                onUpdate={updateCard}
+                onRemove={() => removeCard(card.id)}
+                onReset={() => resetCard(card.id)}
+                showRemove={cards.length > 1}
+                isBestDeal={bestDealIds.has(card.id)}
+                isNew={card.id === newCardId}
+              />
+            </div>
+          ))}
+        </div>
 
         {cards.length < 6 && (
           <button
