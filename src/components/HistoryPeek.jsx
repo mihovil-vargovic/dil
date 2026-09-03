@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Scale } from 'lucide-react'
+import { Scale, RotateCcw } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,7 +32,7 @@ function EntryChip({ card, isWinner, suffix }) {
   return (
     <span
       className={[
-        'inline-flex items-center px-2.5 py-1 rounded-full text-xs border transition-colors',
+        'inline-flex items-center px-3 py-1.5 rounded-full text-sm border transition-colors',
         isWinner
           ? 'border-foreground/40 bg-foreground/5 font-semibold text-foreground'
           : 'border-border text-muted-foreground',
@@ -47,30 +48,42 @@ function HistoryEntry({ entry, onDelete, onRestore }) {
 
   return (
     <div
-      className="flex flex-col gap-2 py-3 px-1 cursor-pointer"
+      className="w-full flex flex-col gap-2 py-3 px-1 cursor-pointer"
       onClick={() => onRestore(entry)}
     >
-      <div className="flex items-center justify-between">
-        <span className="text-xs text-muted-foreground font-medium">
-          {formatDate(entry.savedAt)} · {MODE_LABEL[entry.unitType]}
-        </span>
-        <button
-          onClick={e => { e.stopPropagation(); onDelete(entry.id) }}
-          className="text-muted-foreground hover:text-destructive transition-colors p-1"
-          aria-label="Delete entry"
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="3 6 5 6 21 6" />
-            <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
-            <path d="M10 11v6M14 11v6" />
-            <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
-          </svg>
-        </button>
-      </div>
-      <div className="flex flex-wrap gap-1.5">
-        {entry.cards.map((card, i) => (
-          <EntryChip key={i} card={card} isWinner={i === entry.winnerId} suffix={suffix} />
-        ))}
+      <span className="text-xs text-muted-foreground font-medium">
+        {formatDate(entry.savedAt)} · {MODE_LABEL[entry.unitType]}
+      </span>
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center gap-1.5">
+          {entry.cards.map((card, i) => (
+            <EntryChip key={i} card={card} isWinner={i === entry.winnerId} suffix={suffix} />
+          ))}
+        </div>
+        <div className="flex items-center gap-1 shrink-0">
+          <Button
+            variant="accent"
+            size="icon"
+            onClick={e => { e.stopPropagation(); onRestore(entry) }}
+            aria-label="Restore entry"
+          >
+            <RotateCcw aria-hidden="true" />
+          </Button>
+          <Button
+            variant="accent"
+            size="icon"
+            onClick={e => { e.stopPropagation(); onDelete(entry.id) }}
+            aria-label="Delete entry"
+            className="hover:bg-destructive/20 hover:text-destructive"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <polyline points="3 6 5 6 21 6" />
+              <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
+              <path d="M10 11v6M14 11v6" />
+              <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+            </svg>
+          </Button>
+        </div>
       </div>
     </div>
   )

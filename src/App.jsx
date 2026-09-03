@@ -197,26 +197,24 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
         ].join(' ')}
       >
         <CardContent className="p-4 flex flex-col gap-4">
-          {isBestDeal && (
-            <Badge variant="default" className="text-xs self-start -mb-1">
-              ✓ Best deal
-            </Badge>
-          )}
-
           <div key={resetVersion} className="flex flex-col gap-4 animate-result-in">
             <div className="min-h-[53px] flex flex-col gap-4">
               <div className="flex items-center justify-between gap-2">
                 {card.result !== null ? (
                   <p className="text-3xl font-bold text-left text-foreground leading-none">
                     <AnimatedDigits text={`€${card.result.toFixed(2)}`} animKey={resultVersion} />{' '}
-                    <span className="font-normal text-muted-foreground">{cfg.resultSuffix}</span>
+                    <span className="text-sm font-normal text-muted-foreground">{cfg.resultSuffix}</span>
                   </p>
                 ) : (
                   <p className="text-3xl font-bold text-left text-muted-foreground/40 leading-none">
-                    €0.00 <span className="font-normal">{cfg.resultSuffix}</span>
+                    €0.00 <span className="text-sm font-normal">{cfg.resultSuffix}</span>
                   </p>
                 )}
-                {showRemove && (
+                {isBestDeal ? (
+                  <Badge variant="default" className="text-xs shrink-0">
+                    ✓ Best deal
+                  </Badge>
+                ) : showRemove && (
                   <button
                     onClick={onRemove}
                     aria-label="Remove product"
