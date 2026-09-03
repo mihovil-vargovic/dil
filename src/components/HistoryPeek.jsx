@@ -123,8 +123,8 @@ export function HistoryPeek({ entries, onDelete, onClearAll, onRestore, hasCurre
       <button
         onClick={() => setOpen(true)}
         aria-label="Open history"
-        className="fixed z-40 h-11 pl-4 pr-5 rounded-full bg-white border border-[#E0E0E0] shadow-[0_0_0_1px_#E0E0E0,_0_2px_4px_0_rgba(0,0,0,0.05),_0_1px_1.5px_0_rgba(0,0,0,0.035)] flex items-center gap-2 text-foreground hover:bg-[#FAFAFA] transition-colors"
-        style={{ left: '16px', bottom: 'calc(16px + env(safe-area-inset-bottom, 0px))' }}
+        className="fixed z-40 h-11 pl-4 pr-5 rounded-full bg-white border border-[#E0E0E0] shadow-[0_0_0_1px_#E0E0E0,_0_2px_4px_0_rgba(0,0,0,0.025),_0_1px_1.5px_0_rgba(0,0,0,0.0175)] flex items-center gap-2 text-foreground hover:bg-[#FAFAFA] transition-colors"
+        style={{ right: '16px', bottom: 'calc(16px + env(safe-area-inset-bottom, 0px))' }}
       >
         <Scale size={16} strokeWidth={2} aria-hidden="true" />
         <span className="text-sm font-medium">History</span>

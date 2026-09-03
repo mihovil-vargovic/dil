@@ -354,7 +354,7 @@ export default function App() {
 
         <div
           ref={scrollRef}
-          className="flex overflow-x-auto snap-x snap-mandatory gap-4 no-scrollbar -mx-2 -my-2 px-2 py-2"
+          className="flex overflow-x-auto snap-x snap-mandatory gap-4 no-scrollbar -mx-2 -my-2 px-2 py-2 scroll-px-2"
         >
           {cards.map(card => (
             <div key={card.id} className={['shrink-0 snap-start', cards.length === 1 ? 'w-full' : 'w-[310px]'].join(' ')}>
