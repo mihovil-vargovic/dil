@@ -508,12 +508,7 @@ export default function App() {
   }
 
   return (
-    <div
-      className={[
-        'min-h-screen bg-white flex flex-col items-center pt-3 px-4 pb-24',
-        cards.length === 1 ? 'justify-center' : '',
-      ].join(' ')}
-    >
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center pt-3 px-4 pb-24">
       <div className="w-full max-w-[375px] flex flex-col gap-4">
 
         <ComparisonStack
