@@ -1,4 +1,4 @@
-import { useState, useId, useRef, useEffect } from 'react'
+import { useState, useId, useRef, useLayoutEffect } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -125,25 +125,104 @@ function InputWithTag({ label, value, onChange, tag, error, placeholder }) {
   )
 }
 
-function UnitSwitcher({ mode, onChange }) {
+const MODE_ORDER = ['weight', 'length', 'pieces']
+const LONG_PRESS_MS = 500
+
+function ModePicker({ mode, open, onSelect, onCancel }) {
   return (
-    <div role="group" aria-label="Unit type" className="flex items-center bg-[#F0F0F0] rounded-3xl p-1 gap-0.5">
-      {Object.entries(MODES).map(([key, cfg]) => (
-        <button
-          key={key}
-          onClick={() => onChange(key)}
-          aria-pressed={mode === key}
-          className={[
-            'flex-1 text-sm font-medium py-1.5 rounded-3xl transition-all',
-            mode === key
-              ? 'bg-white text-foreground shadow-[0_1px_3px_rgba(0,0,0,0.12)]'
-              : 'text-[#6B7280] hover:text-foreground',
-          ].join(' ')}
+    <>
+      {open && (
+        <div
+          className="fixed inset-0 z-50 bg-black/20 transition-opacity"
+          onClick={onCancel}
+        />
+      )}
+      <div className="fixed inset-x-0 bottom-0 z-50 pointer-events-none">
+        <div
+          className="pointer-events-auto bg-white rounded-t-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.13)] p-4 flex flex-col gap-2"
+          style={{
+            transform: open ? 'translateY(0)' : 'translateY(100%)',
+            transition: 'transform 0.3s ease',
+            paddingBottom: 'calc(16px + env(safe-area-inset-bottom, 0px))',
+          }}
+          inert={!open}
         >
-          {cfg.label}
-        </button>
-      ))}
-    </div>
+          {MODE_ORDER.map(key => (
+            <button
+              key={key}
+              onClick={() => onSelect(key)}
+              className={[
+                'w-full h-11 rounded-xl text-sm font-semibold transition-colors',
+                mode === key
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-[#F5F5F5] text-foreground hover:bg-[#EFEFEF]',
+              ].join(' ')}
+            >
+              {MODES[key].label}
+            </button>
+          ))}
+          <button
+            onClick={onCancel}
+            className="w-full h-11 rounded-xl bg-[#F5F5F5] border border-[#E0E0E0] text-sm font-semibold text-foreground hover:bg-[#EFEFEF] transition-colors mt-1"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </>
+  )
+}
+
+function ModeButton({ mode, onChange }) {
+  const [pickerOpen, setPickerOpen] = useState(false)
+  const timerRef = useRef(null)
+  const longPressRef = useRef(false)
+
+  function clearTimer() {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current)
+      timerRef.current = null
+    }
+  }
+
+  function handlePointerDown() {
+    longPressRef.current = false
+    timerRef.current = setTimeout(() => {
+      longPressRef.current = true
+      setPickerOpen(true)
+    }, LONG_PRESS_MS)
+  }
+
+  function handlePointerUp() {
+    clearTimer()
+    if (!longPressRef.current) {
+      const idx = MODE_ORDER.indexOf(mode)
+      onChange(MODE_ORDER[(idx + 1) % MODE_ORDER.length])
+    }
+  }
+
+  function handleSelect(key) {
+    onChange(key)
+    setPickerOpen(false)
+  }
+
+  return (
+    <>
+      <button
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+        onPointerLeave={clearTimer}
+        onPointerCancel={clearTimer}
+        onContextMenu={e => e.preventDefault()}
+        aria-label="Switch unit type — tap to cycle, hold for options"
+        className="fixed z-40 h-11 pl-5 pr-4 rounded-full bg-white border border-[#E0E0E0] shadow-[0_0_0_1px_#E0E0E0,_0_2px_4px_0_rgba(0,0,0,0.025),_0_1px_1.5px_0_rgba(0,0,0,0.0175)] flex items-center gap-2 text-foreground hover:bg-[#FAFAFA] transition-colors select-none"
+        style={{ left: '16px', bottom: 'calc(16px + env(safe-area-inset-bottom, 0px))', touchAction: 'manipulation' }}
+      >
+        <span className="text-sm font-medium">{MODES[mode].label}</span>
+      </button>
+
+      <ModePicker mode={mode} open={pickerOpen} onSelect={handleSelect} onCancel={() => setPickerOpen(false)} />
+    </>
   )
 }
 
@@ -271,6 +350,90 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
   )
 }
 
+// ─── Wallet-style card stack ───────────────────────────────────────────────
+
+const PEEK_OFFSET = 44
+
+function PeekCard({ card, mode, isBestDeal, onClick }) {
+  const cfg = MODES[mode]
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label="Bring product to front"
+      className={[
+        'w-full text-left rounded-t-3xl rounded-b-none border-0 shadow-[0_0_0_1px_#E0E0E0,_0_2px_4px_0_rgba(0,0,0,0.07),_0_1px_1.5px_0_rgba(0,0,0,0.05)] bg-white p-4 flex items-center justify-between transition-colors active:bg-[#FAFAFA]',
+        isBestDeal ? 'border-l-4 !border-l-primary bg-primary/5' : '',
+      ].join(' ')}
+    >
+      {card.result !== null ? (
+        <p className="text-xl font-bold text-left text-foreground leading-none">
+          €{card.result.toFixed(2)} <span className="text-xs font-normal text-muted-foreground">{cfg.resultSuffix}</span>
+        </p>
+      ) : (
+        <p className="text-xl font-bold text-left text-muted-foreground/40 leading-none">
+          €0.00 <span className="text-xs font-normal">{cfg.resultSuffix}</span>
+        </p>
+      )}
+      {isBestDeal && (
+        <Badge variant="default" className="text-xs shrink-0">
+          ✓ Best deal
+        </Badge>
+      )}
+    </button>
+  )
+}
+
+function ComparisonStack({ cards, mode, onUpdate, onRemove, onReset, bestDealIds, newCardId, onBringToFront }) {
+  const frontRef = useRef(null)
+  const [frontHeight, setFrontHeight] = useState(0)
+
+  useLayoutEffect(() => {
+    if (frontRef.current) {
+      const h = frontRef.current.offsetHeight
+      if (h !== frontHeight) setFrontHeight(h)
+    }
+  })
+
+  const containerHeight = frontHeight ? (cards.length - 1) * PEEK_OFFSET + frontHeight : undefined
+
+  return (
+    <div className="relative" style={{ height: containerHeight, transition: 'height 250ms ease' }}>
+      {cards.map((card, i) => {
+        const isFront = i === cards.length - 1
+        return (
+          <div
+            key={card.id}
+            className="absolute inset-x-0 transition-[top] duration-300 ease-out"
+            style={{ top: i * PEEK_OFFSET, zIndex: i + 1 }}
+            ref={isFront ? frontRef : undefined}
+          >
+            {isFront ? (
+              <ProductCard
+                card={card}
+                mode={mode}
+                onUpdate={onUpdate}
+                onRemove={() => onRemove(card.id)}
+                onReset={() => onReset(card.id)}
+                showRemove={cards.length > 1}
+                isBestDeal={bestDealIds.has(card.id)}
+                isNew={card.id === newCardId}
+              />
+            ) : (
+              <PeekCard
+                card={card}
+                mode={mode}
+                isBestDeal={bestDealIds.has(card.id)}
+                onClick={() => onBringToFront(card.id)}
+              />
+            )}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 // ─── App ─────────────────────────────────────────────────────────────────────
 
 export default function App() {
@@ -281,18 +444,11 @@ export default function App() {
     pieces: [makeCard()],
   })
   const [newCardId, setNewCardId] = useState(null)
-  const scrollRef = useRef(null)
 
   const { entries, addEntry, deleteEntry, clearAll } = useHistory()
   const cards = cardsByMode[mode]
   const bestDealIds = getBestDeal(cards)
   const hasAnyInput = cards.some(c => c.price !== '' || c.amount !== '')
-
-  useEffect(() => {
-    if (newCardId !== null && scrollRef.current) {
-      scrollRef.current.scrollTo({ left: scrollRef.current.scrollWidth, behavior: 'smooth' })
-    }
-  }, [newCardId])
 
   function setCards(updater) {
     setCardsByMode(prev => ({
@@ -304,7 +460,6 @@ export default function App() {
   function handleModeChange(newMode) {
     if (newMode === mode) return
     setMode(newMode)
-    if (scrollRef.current) scrollRef.current.scrollLeft = 0
   }
 
   function updateCard(updated) {
@@ -333,6 +488,14 @@ export default function App() {
     setCards(prev => [...prev, card])
   }
 
+  function bringToFront(id) {
+    setCards(prev => {
+      const target = prev.find(c => c.id === id)
+      if (!target) return prev
+      return [...prev.filter(c => c.id !== id), target]
+    })
+  }
+
   function handleRestore(entry) {
     const restored = entry.cards.map(c => ({
       id: nextId++,
@@ -350,27 +513,16 @@ export default function App() {
     <div className="min-h-screen bg-white flex flex-col items-center pt-3 px-4 pb-24">
       <div className="w-full max-w-[375px] flex flex-col gap-4">
 
-        <UnitSwitcher mode={mode} onChange={handleModeChange} />
-
-        <div
-          ref={scrollRef}
-          className="flex overflow-x-auto snap-x snap-mandatory gap-4 no-scrollbar -mx-2 -my-2 px-2 py-2 scroll-px-2"
-        >
-          {cards.map(card => (
-            <div key={card.id} className={['shrink-0 snap-start', cards.length === 1 ? 'w-full' : 'w-[310px]'].join(' ')}>
-              <ProductCard
-                card={card}
-                mode={mode}
-                onUpdate={updateCard}
-                onRemove={() => removeCard(card.id)}
-                onReset={() => resetCard(card.id)}
-                showRemove={cards.length > 1}
-                isBestDeal={bestDealIds.has(card.id)}
-                isNew={card.id === newCardId}
-              />
-            </div>
-          ))}
-        </div>
+        <ComparisonStack
+          cards={cards}
+          mode={mode}
+          onUpdate={updateCard}
+          onRemove={removeCard}
+          onReset={resetCard}
+          bestDealIds={bestDealIds}
+          newCardId={newCardId}
+          onBringToFront={bringToFront}
+        />
 
         {cards.length < 6 && (
           <button
@@ -381,6 +533,8 @@ export default function App() {
           </button>
         )}
       </div>
+
+      <ModeButton mode={mode} onChange={handleModeChange} />
 
       <HistoryPeek
         entries={entries}
