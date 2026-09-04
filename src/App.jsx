@@ -270,7 +270,7 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
         className={[
           'py-0 rounded-3xl border-0 shadow-[0_0_0_1px_#E0E0E0,_0_2px_4px_0_rgba(0,0,0,0.07),_0_1px_1.5px_0_rgba(0,0,0,0.05)] transition-colors',
           isBestDeal
-            ? 'border-l-4 !border-l-primary bg-primary/5 shadow-[4px_0_0_0_oklch(0.905_0.180_95),_0_0_0_1px_#E0E0E0,_0_2px_4px_0_rgba(0,0,0,0.07)]'
+            ? 'border-l-4 !border-l-primary bg-[oklch(0.975_0.035_95)] shadow-[4px_0_0_0_oklch(0.905_0.180_95),_0_0_0_1px_#E0E0E0,_0_2px_4px_0_rgba(0,0,0,0.07)]'
             : '',
         ].join(' ')}
       >
@@ -361,7 +361,7 @@ function PeekCard({ card, mode, isBestDeal, onClick }) {
       aria-label="Bring product to front"
       className={[
         'w-full text-left rounded-t-3xl rounded-b-none border-0 shadow-[0_0_0_1px_#E0E0E0,_0_2px_4px_0_rgba(0,0,0,0.07),_0_1px_1.5px_0_rgba(0,0,0,0.05)] bg-white p-4 flex items-center justify-between transition-colors active:bg-[#FAFAFA]',
-        isBestDeal ? 'border-l-4 !border-l-primary bg-primary/5' : '',
+        isBestDeal ? 'border-l-4 !border-l-primary bg-[oklch(0.975_0.035_95)]' : '',
       ].join(' ')}
     >
       {card.result !== null ? (
