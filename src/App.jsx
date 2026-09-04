@@ -215,7 +215,7 @@ function ModeButton({ mode, onChange }) {
         onPointerCancel={clearTimer}
         onContextMenu={e => e.preventDefault()}
         aria-label="Switch unit type — tap to cycle, hold for options"
-        className="fixed z-40 h-11 pl-5 pr-4 rounded-full bg-white border border-[#E0E0E0] shadow-[0_0_0_1px_#E0E0E0,_0_2px_4px_0_rgba(0,0,0,0.025),_0_1px_1.5px_0_rgba(0,0,0,0.0175)] flex items-center gap-2 text-foreground hover:bg-[#FAFAFA] transition-colors select-none"
+        className="fixed z-40 h-11 px-5 rounded-full bg-white border border-[#E0E0E0] shadow-[0_0_0_1px_#E0E0E0,_0_2px_4px_0_rgba(0,0,0,0.025),_0_1px_1.5px_0_rgba(0,0,0,0.0175)] flex items-center justify-center gap-2 text-foreground hover:bg-[#FAFAFA] transition-colors select-none"
         style={{ left: '16px', bottom: 'calc(16px + env(safe-area-inset-bottom, 0px))', touchAction: 'manipulation' }}
       >
         <span className="text-sm font-medium">{MODES[mode].label}</span>
@@ -245,7 +245,6 @@ function AnimatedDigits({ text, animKey }) {
 
 function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBestDeal, isNew }) {
   const cfg = MODES[mode]
-  const hasInput = card.price !== '' || card.amount !== '' || card.result !== null
   const [resultVersion, setResultVersion] = useState(0)
   const [resetVersion, setResetVersion] = useState(0)
 
@@ -335,7 +334,6 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
               variant="accent"
               onClick={handleReset}
               aria-label="Reset card"
-              disabled={!hasInput}
               className="size-11 rounded-3xl shrink-0"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -510,7 +508,12 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center pt-3 px-4 pb-24">
+    <div
+      className={[
+        'min-h-screen bg-white flex flex-col items-center pt-3 px-4 pb-24',
+        cards.length === 1 ? 'justify-center' : '',
+      ].join(' ')}
+    >
       <div className="w-full max-w-[375px] flex flex-col gap-4">
 
         <ComparisonStack
