@@ -92,7 +92,15 @@ function HistoryEntry({ entry, onDelete, onRestore }) {
 export function HistoryPeek({ entries, onDelete, onClearAll, onRestore, hasCurrentInput }) {
   const [open, setOpen] = useState(false)
   const [pendingRestore, setPendingRestore] = useState(null)
+  const [pendingDelete, setPendingDelete] = useState(null)
   const [showClearConfirm, setShowClearConfirm] = useState(false)
+
+  function confirmDelete() {
+    if (pendingDelete !== null) {
+      onDelete(pendingDelete)
+      setPendingDelete(null)
+    }
+  }
 
   function handleRestoreClick(entry) {
     if (hasCurrentInput) {
@@ -174,7 +182,7 @@ export function HistoryPeek({ entries, onDelete, onClearAll, onRestore, hasCurre
                     <HistoryEntry
                       key={e.id}
                       entry={e}
-                      onDelete={onDelete}
+                      onDelete={setPendingDelete}
                       onRestore={handleRestoreClick}
                     />
                   ))}
@@ -219,8 +227,24 @@ export function HistoryPeek({ entries, onDelete, onClearAll, onRestore, hasCurre
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmClearAll} className="bg-destructive text-white hover:bg-destructive/90">
+            <AlertDialogAction onClick={confirmClearAll} className="text-destructive font-normal">
               Delete all
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete entry confirmation */}
+      <AlertDialog open={pendingDelete !== null} onOpenChange={open => { if (!open) setPendingDelete(null) }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this entry?</AlertDialogTitle>
+            <AlertDialogDescription>This can't be undone.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setPendingDelete(null)}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="text-destructive font-normal">
+              Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
