@@ -169,7 +169,6 @@ export function HistoryPeek({ entries, onDelete, onClearAll, onRestore, hasCurre
               </div>
             ) : (
               <div className="flex-1 overflow-y-auto px-4">
-                <p className="text-xs text-muted-foreground mb-2">Tap to restore · Trash to delete</p>
                 <div className="divide-y divide-border">
                   {entries.map(e => (
                     <HistoryEntry
