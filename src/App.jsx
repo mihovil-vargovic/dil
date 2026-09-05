@@ -215,7 +215,7 @@ function ModeButton({ mode, onChange }) {
         onPointerCancel={clearTimer}
         onContextMenu={e => e.preventDefault()}
         aria-label="Switch unit type — tap to cycle, hold for options"
-        className="fixed z-40 h-11 px-5 rounded-full bg-white border border-[#E0E0E0] shadow-[0_0_0_1px_#E0E0E0,_0_2px_4px_0_rgba(0,0,0,0.025),_0_1px_1.5px_0_rgba(0,0,0,0.0175)] flex items-center justify-center gap-2 text-foreground hover:bg-[#FAFAFA] transition-colors select-none"
+        className="fixed z-40 h-11 px-5 rounded-full bg-white border-[0.5px] border-[#E0E0E0] shadow-[0_0_0_0.5px_#E0E0E0,_0_2px_4px_0_rgba(0,0,0,0.025),_0_1px_1.5px_0_rgba(0,0,0,0.0175)] flex items-center justify-center gap-2 text-foreground hover:bg-[#FAFAFA] transition-colors select-none"
         style={{ left: '16px', bottom: 'calc(16px + env(safe-area-inset-bottom, 0px))', touchAction: 'manipulation' }}
       >
         <span className="text-sm font-medium">{MODES[mode].label}</span>
@@ -509,7 +509,10 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center pt-3 px-4 pb-24">
-      <div className="w-full max-w-[375px] flex flex-col gap-4">
+      <div
+        className="w-full max-w-[375px] flex flex-col gap-4"
+        style={cards.length === 1 ? { transform: 'translateY(-32px)' } : undefined}
+      >
 
         <ComparisonStack
           cards={cards}
