@@ -1,4 +1,5 @@
 import { useState, useId, useRef, useLayoutEffect } from 'react'
+import { WeightTilde, Ruler, Package } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -13,6 +14,7 @@ const MODES = {
     label: 'Weight',
     amountLabel: 'Amount',
     tag: 'g',
+    icon: WeightTilde,
     calc: (price, amount) => price / (amount / 1000),
     resultSuffix: '/ kg',
   },
@@ -20,6 +22,7 @@ const MODES = {
     label: 'Length',
     amountLabel: 'Amount',
     tag: 'cm',
+    icon: Ruler,
     calc: (price, amount) => price / (amount / 100),
     resultSuffix: '/ m',
   },
@@ -27,6 +30,7 @@ const MODES = {
     label: 'Pieces',
     amountLabel: 'Quantity',
     tag: 'pcs',
+    icon: Package,
     calc: (price, amount) => price / amount,
     resultSuffix: '/ pc',
   },
@@ -147,20 +151,24 @@ function ModePicker({ mode, open, onSelect, onCancel }) {
           }}
           inert={!open}
         >
-          {MODE_ORDER.map(key => (
-            <button
-              key={key}
-              onClick={() => onSelect(key)}
-              className={[
-                'w-full h-11 rounded-xl text-sm font-semibold transition-colors',
-                mode === key
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-[#F5F5F5] text-foreground hover:bg-[#EFEFEF]',
-              ].join(' ')}
-            >
-              {MODES[key].label}
-            </button>
-          ))}
+          {MODE_ORDER.map(key => {
+            const Icon = MODES[key].icon
+            return (
+              <button
+                key={key}
+                onClick={() => onSelect(key)}
+                className={[
+                  'w-full h-11 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2',
+                  mode === key
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-[#F5F5F5] text-foreground hover:bg-[#EFEFEF]',
+                ].join(' ')}
+              >
+                <Icon size={16} strokeWidth={2} aria-hidden="true" />
+                {MODES[key].label}
+              </button>
+            )
+          })}
           <button
             onClick={onCancel}
             className="w-full h-11 rounded-xl bg-[#F5F5F5] border border-[#E0E0E0] text-sm font-semibold text-foreground hover:bg-[#EFEFEF] transition-colors mt-1"
@@ -206,6 +214,8 @@ function ModeButton({ mode, onChange }) {
     setPickerOpen(false)
   }
 
+  const Icon = MODES[mode].icon
+
   return (
     <>
       <button
@@ -218,6 +228,7 @@ function ModeButton({ mode, onChange }) {
         className="fixed z-40 h-11 px-5 rounded-full bg-white border-[0.5px] border-[#E0E0E0] shadow-[0_0_0_0.5px_#E0E0E0,_0_2px_4px_0_rgba(0,0,0,0.025),_0_1px_1.5px_0_rgba(0,0,0,0.0175)] flex items-center justify-center gap-2 text-foreground hover:bg-[#FAFAFA] transition-colors select-none"
         style={{ left: '16px', bottom: 'calc(16px + env(safe-area-inset-bottom, 0px))', touchAction: 'manipulation' }}
       >
+        <Icon size={16} strokeWidth={2} aria-hidden="true" />
         <span className="text-sm font-medium">{MODES[mode].label}</span>
       </button>
 
