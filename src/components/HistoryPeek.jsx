@@ -48,7 +48,7 @@ function HistoryEntry({ entry, onDelete, onRestore }) {
 
   return (
     <div
-      className="w-full flex flex-col gap-2 py-3 px-1 cursor-pointer"
+      className="w-full flex flex-col gap-2 py-3 px-4 cursor-pointer"
       onClick={() => onRestore(entry)}
     >
       <span className="text-xs text-muted-foreground font-medium">
@@ -63,7 +63,7 @@ function HistoryEntry({ entry, onDelete, onRestore }) {
         <div className="flex items-center gap-1 shrink-0">
           <Button
             variant="accent"
-            size="icon"
+            size="icon-lg"
             onClick={e => { e.stopPropagation(); onRestore(entry) }}
             aria-label="Restore entry"
           >
@@ -71,7 +71,7 @@ function HistoryEntry({ entry, onDelete, onRestore }) {
           </Button>
           <Button
             variant="accent"
-            size="icon"
+            size="icon-lg"
             onClick={e => { e.stopPropagation(); onDelete(entry.id) }}
             aria-label="Delete entry"
             className="hover:bg-destructive/20 hover:text-destructive"
@@ -138,14 +138,6 @@ export function HistoryPeek({ entries, onDelete, onClearAll, onRestore, hasCurre
         <span className="text-sm font-medium">History</span>
       </button>
 
-      {/* Backdrop */}
-      {open && (
-        <div
-          className="fixed inset-0 z-30 bg-black/20 transition-opacity"
-          onClick={() => setOpen(false)}
-        />
-      )}
-
       {/* Sheet */}
       <div className="fixed inset-0 z-40 pointer-events-none">
         <div
@@ -176,7 +168,7 @@ export function HistoryPeek({ entries, onDelete, onClearAll, onRestore, hasCurre
                 <p className="text-sm text-muted-foreground">No history yet</p>
               </div>
             ) : (
-              <div className="flex-1 overflow-y-auto px-4">
+              <div className="flex-1 overflow-y-auto">
                 <div className="divide-y divide-border">
                   {entries.map(e => (
                     <HistoryEntry
