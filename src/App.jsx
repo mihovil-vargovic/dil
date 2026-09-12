@@ -1,5 +1,5 @@
 import { useState, useId, useRef, useLayoutEffect } from 'react'
-import { WeightTilde, Ruler, Package } from 'lucide-react'
+import { WeightTilde, Ruler, Package, Check } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -158,7 +158,7 @@ function ModePicker({ mode, open, onSelect, onCancel }) {
                 key={key}
                 onClick={() => onSelect(key)}
                 className={[
-                  'w-full h-11 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2',
+                  'w-full h-11 rounded-xl text-sm font-semibold transition-colors flex items-center justify-start gap-2 px-4',
                   mode === key
                     ? 'bg-primary text-primary-foreground'
                     : 'bg-[#F5F5F5] text-foreground hover:bg-[#EFEFEF]',
@@ -281,7 +281,7 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
         className={[
           'py-0 rounded-3xl border-0 shadow-[0_0_0_1px_#E0E0E0,_0_2px_4px_0_rgba(0,0,0,0.07),_0_1px_1.5px_0_rgba(0,0,0,0.05)] transition-colors',
           isBestDeal
-            ? 'border-l-4 !border-l-primary bg-[oklch(0.975_0.035_95)] shadow-[4px_0_0_0_oklch(0.905_0.180_95),_0_0_0_1px_#E0E0E0,_0_2px_4px_0_rgba(0,0,0,0.07)]'
+            ? 'bg-[oklch(0.975_0.035_95)] shadow-[inset_4px_0_0_0_oklch(0.905_0.180_95),_0_0_0_1px_#E0E0E0,_0_2px_4px_0_rgba(0,0,0,0.07),_0_1px_1.5px_0_rgba(0,0,0,0.05)]'
             : '',
         ].join(' ')}
       >
@@ -300,8 +300,9 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
                   </p>
                 )}
                 {isBestDeal ? (
-                  <Badge variant="default" className="text-xs shrink-0">
-                    ✓ Best deal
+                  <Badge variant="default" className="text-sm gap-1 shrink-0">
+                    <Check size={14} strokeWidth={2.5} aria-hidden="true" />
+                    Deal
                   </Badge>
                 ) : showRemove && (
                   <button
@@ -372,7 +373,7 @@ function PeekCard({ card, mode, isBestDeal, onClick }) {
       aria-label="Bring product to front"
       className={[
         'w-full text-left rounded-t-3xl rounded-b-none border-0 shadow-[0_0_0_1px_#E0E0E0,_0_2px_4px_0_rgba(0,0,0,0.07),_0_1px_1.5px_0_rgba(0,0,0,0.05)] bg-white p-4 flex items-center justify-between transition-colors active:bg-[#FAFAFA]',
-        isBestDeal ? 'border-l-4 !border-l-primary bg-[oklch(0.975_0.035_95)]' : '',
+        isBestDeal ? 'bg-[oklch(0.975_0.035_95)] shadow-[inset_4px_0_0_0_oklch(0.905_0.180_95),_0_0_0_1px_#E0E0E0,_0_2px_4px_0_rgba(0,0,0,0.07),_0_1px_1.5px_0_rgba(0,0,0,0.05)]' : '',
       ].join(' ')}
     >
       {card.result !== null ? (
@@ -385,8 +386,9 @@ function PeekCard({ card, mode, isBestDeal, onClick }) {
         </p>
       )}
       {isBestDeal && (
-        <Badge variant="default" className="text-xs shrink-0">
-          ✓ Best deal
+        <Badge variant="default" className="text-sm gap-1 shrink-0">
+          <Check size={14} strokeWidth={2.5} aria-hidden="true" />
+          Deal
         </Badge>
       )}
     </button>
@@ -522,7 +524,7 @@ export default function App() {
     <div className="min-h-screen bg-white flex flex-col items-center justify-center pt-3 px-4 pb-24">
       <div
         className="w-full max-w-[375px] flex flex-col gap-4"
-        style={cards.length === 1 ? { transform: 'translateY(-32px)' } : undefined}
+        style={cards.length === 1 ? { transform: 'translateY(-48px)' } : undefined}
       >
 
         <ComparisonStack
