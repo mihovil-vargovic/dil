@@ -1,5 +1,5 @@
 import { useState, useId, useRef, useLayoutEffect } from 'react'
-import { WeightTilde, Ruler, Package, CheckCircle2 } from 'lucide-react'
+import { WeightTilde, Ruler, Package } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -301,7 +301,6 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
                 )}
                 {isBestDeal ? (
                   <Badge variant="default" className="text-sm gap-1 shrink-0">
-                    <CheckCircle2 size={14} strokeWidth={2.5} aria-hidden="true" />
                     Deal
                   </Badge>
                 ) : showRemove && (
@@ -390,7 +389,6 @@ function PeekCard({ card, mode, isBestDeal, onClick }) {
         )}
         {isBestDeal && (
           <Badge variant="default" className="text-sm gap-1 shrink-0">
-            <CheckCircle2 size={14} strokeWidth={2.5} aria-hidden="true" />
             Deal
           </Badge>
         )}
