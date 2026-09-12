@@ -1,5 +1,5 @@
 import { useState, useId, useRef, useLayoutEffect } from 'react'
-import { WeightTilde, Ruler, Package, Check } from 'lucide-react'
+import { WeightTilde, Ruler, Package, CheckCircle2 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -281,7 +281,7 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
         className={[
           'py-0 rounded-3xl border-0 shadow-[0_0_0_1px_#E0E0E0,_0_2px_4px_0_rgba(0,0,0,0.07),_0_1px_1.5px_0_rgba(0,0,0,0.05)] transition-colors',
           isBestDeal
-            ? 'bg-[oklch(0.975_0.035_95)] shadow-[inset_4px_0_0_0_oklch(0.905_0.180_95),_0_0_0_1px_#E0E0E0,_0_2px_4px_0_rgba(0,0,0,0.07),_0_1px_1.5px_0_rgba(0,0,0,0.05)]'
+            ? 'bg-[oklch(0.975_0.035_95)] shadow-[inset_0_0_0_2px_oklch(0.905_0.180_95),_0_0_0_1px_#E0E0E0,_0_2px_4px_0_rgba(0,0,0,0.07),_0_1px_1.5px_0_rgba(0,0,0,0.05)]'
             : '',
         ].join(' ')}
       >
@@ -301,7 +301,7 @@ function ProductCard({ card, mode, onUpdate, onRemove, onReset, showRemove, isBe
                 )}
                 {isBestDeal ? (
                   <Badge variant="default" className="text-sm gap-1 shrink-0">
-                    <Check size={14} strokeWidth={2.5} aria-hidden="true" />
+                    <CheckCircle2 size={14} strokeWidth={2.5} aria-hidden="true" />
                     Deal
                   </Badge>
                 ) : showRemove && (
@@ -372,25 +372,29 @@ function PeekCard({ card, mode, isBestDeal, onClick }) {
       onClick={onClick}
       aria-label="Bring product to front"
       className={[
-        'w-full text-left rounded-t-3xl rounded-b-none border-0 shadow-[0_0_0_1px_#E0E0E0,_0_2px_4px_0_rgba(0,0,0,0.07),_0_1px_1.5px_0_rgba(0,0,0,0.05)] bg-white p-4 flex items-center justify-between transition-colors active:bg-[#FAFAFA]',
-        isBestDeal ? 'bg-[oklch(0.975_0.035_95)] shadow-[inset_4px_0_0_0_oklch(0.905_0.180_95),_0_0_0_1px_#E0E0E0,_0_2px_4px_0_rgba(0,0,0,0.07),_0_1px_1.5px_0_rgba(0,0,0,0.05)]' : '',
+        'w-full text-left rounded-t-3xl rounded-b-none border-0 shadow-[0_0_0_1px_#E0E0E0,_0_2px_4px_0_rgba(0,0,0,0.07),_0_1px_1.5px_0_rgba(0,0,0,0.05)] p-4 transition-colors active:bg-[#FAFAFA]',
+        isBestDeal
+          ? 'bg-[oklch(0.975_0.035_95)] shadow-[inset_0_0_0_2px_oklch(0.905_0.180_95),_0_0_0_1px_#E0E0E0,_0_2px_4px_0_rgba(0,0,0,0.07),_0_1px_1.5px_0_rgba(0,0,0,0.05)]'
+          : 'bg-white',
       ].join(' ')}
     >
-      {card.result !== null ? (
-        <p className="text-xl font-bold text-left text-foreground leading-none">
-          €{card.result.toFixed(2)} <span className="text-xs font-normal text-muted-foreground">{cfg.resultSuffix}</span>
-        </p>
-      ) : (
-        <p className="text-xl font-bold text-left text-muted-foreground/40 leading-none">
-          €0.00 <span className="text-xs font-normal">{cfg.resultSuffix}</span>
-        </p>
-      )}
-      {isBestDeal && (
-        <Badge variant="default" className="text-sm gap-1 shrink-0">
-          <Check size={14} strokeWidth={2.5} aria-hidden="true" />
-          Deal
-        </Badge>
-      )}
+      <div className="flex items-center justify-between -translate-y-1">
+        {card.result !== null ? (
+          <p className="text-xl font-bold text-left text-foreground leading-none">
+            €{card.result.toFixed(2)} <span className="text-xs font-normal text-muted-foreground">{cfg.resultSuffix}</span>
+          </p>
+        ) : (
+          <p className="text-xl font-bold text-left text-muted-foreground/40 leading-none">
+            €0.00 <span className="text-xs font-normal">{cfg.resultSuffix}</span>
+          </p>
+        )}
+        {isBestDeal && (
+          <Badge variant="default" className="text-sm gap-1 shrink-0">
+            <CheckCircle2 size={14} strokeWidth={2.5} aria-hidden="true" />
+            Deal
+          </Badge>
+        )}
+      </div>
     </button>
   )
 }
